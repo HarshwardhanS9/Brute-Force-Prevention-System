@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brute Force Prevention System</title>
+    <style>
+        /* Modern and visually appealing styling */
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #f0f0f5;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 2rem 3rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: 1.8rem;
+            letter-spacing: 1.2px;
+            color: #e0e0ff;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #dcdcff;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            box-shadow: 0 0 8px #9fa8ff;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+        
+        button {
+            background: #9fa8ff;
+            color: #333;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover:not(:disabled) {
+            background-color: #8a97f7;
+        }
+        
+        button:disabled {
+            background-color: #555a87;
+            cursor: not-allowed;
+        }
+        
+        .message {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .message.error {
+            background-color: #ff6b6b;
+            color: #fff;
+        }
+        
+        .message.success {
+            background-color: #4caf50;
+            color: #fff;
+        }
+        
+        .message.info {
+            background-color: #7591f7;
+            color: #fff;
+        }
+        
+        .password-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .show-password-label {
+            display: flex;
+            align-items: center;
+            font-weight: 400;
+            font-size: 0.95rem;
+            color: #dcdcff;
+            cursor: pointer;
+            user-select: none;
+        }
+        .show-password-label input[type="checkbox"] {
+            margin-right: 0.3em;
+        }
+        
+        .eye-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0 0.3em;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+        .eye-btn:focus {
+            outline: 2px solid #9fa8ff;
+        }
+        .password-row input[type="password"],
+        .password-row input[type="text"] {
+            flex: 1;
+        }
+
+        /* CAPTCHA Styles */
+        .captcha-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .captcha-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .captcha-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            flex: 1;
+            text-align: center;
+            user-select: none;
+        }
+        
+        .refresh-captcha {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .captcha-input {
+            flex: 1;
+        }
+        
+        .captcha-hint {
+            font-size: 0.85rem;
+            color: #dcdcff;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <form id="loginForm" autocomplete="off">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required autocomplete="username" />
+
+            <div class="password-row">
+                <input type="password" id="password" name="password" required autocomplete="current-password" />
+                <button type="button" id="togglePassword" class="eye-btn" aria-label="Show password">
+                    <!-- Eye SVG icon (open by default) -->
+                    <span id="eyeIcon"></span>
+                </button>
+            </div>
+
+            <!-- CAPTCHA Section -->
+            <div class="captcha-container">
+                <label for="captchaInput">CAPTCHA Verification</label>
+                <div class="captcha-row">
+                    <div id="captchaBox" class="captcha-box"></div>
+                    <button type="button" id="refreshCaptcha" class="refresh-captcha" aria-label="Refresh CAPTCHA">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dcdcff" stroke-width="2">
+                            <path d="M23 4v6h-6"></path>
+                            <path d="M1 20v-6h6"></path>
+                            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10"></path>
+                            <path d="M20.49 15a9 9 0 01-14.85 3.36L1 14"></path>
+                        </svg>
+                    </button>
+                </div>
+                <input type="text" id="captchaInput" name="captchaInput" required class="captcha-input" placeholder="Enter the text above" />
+                <div class="captcha-hint">Enter the characters shown in the image above</div>
+            </div>
+
+            <button type="submit" id="submitBtn">Log In</button>
+        </form>
+
+        <div id="message" class="message" style="display:none;"></div>
+    </div>
+
+    <script>
+        (function() {
+            const MAX_ATTEMPTS = 5;
+            const BLOCK_TIME_MS = 1 * 60 * 1000; // 1 minute block
+
+            const form = document.getElementById('loginForm');
+            const messageDiv = document.getElementById('message');
+            const submitBtn = document.getElementById('submitBtn');
+            const captchaBox = document.getElementById('captchaBox');
+            const captchaInput = document.getElementById('captchaInput');
+            const refreshCaptchaBtn = document.getElementById('refreshCaptcha');
+
+            // key names for localStorage
+            const ATTEMPTS_KEY = 'bruteForceAttempts';
+            const BLOCK_UNTIL_KEY = 'bruteForceBlockUntil';
+            const CAPTCHA_KEY = 'currentCaptcha';
+
+            // CAPTCHA functionality
+            function generateCaptcha() {
+                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+                let captcha = '';
+                for (let i = 0; i < 6; i++) {
+                    captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                localStorage.setItem(CAPTCHA_KEY, captcha);
+                return captcha;
+            }
+
+            function displayCaptcha() {
+                const captcha = generateCaptcha();
+                captchaBox.textContent = captcha;
+            }
+
+            function validateCaptcha() {
+                const storedCaptcha = localStorage.getItem(CAPTCHA_KEY);
+                const userInput = captchaInput.value.trim();
+                return storedCaptcha === userInput;
+            }
+
+            function getAttempts() {
+                const attempts = parseInt(localStorage.getItem(ATTEMPTS_KEY), 10);
+                return isNaN(attempts) ? 0 : attempts;
+            }
+
+            function setAttempts(count) {
+                localStorage.setItem(ATTEMPTS_KEY, count);
+            }
+
+            function getBlockUntil() {
+                const timestamp = parseInt(localStorage.getItem(BLOCK_UNTIL_KEY), 10);
+                return isNaN(timestamp) ? 0 : timestamp;
+            }
+
+            function setBlockUntil(timestamp) {
+                localStorage.setItem(BLOCK_UNTIL_KEY, timestamp);
+            }
+
+            function clearBlock() {
+                localStorage.removeItem(BLOCK_UNTIL_KEY);
+                setAttempts(0);
+            }
+
+            function showMessage(text, type = 'info') {
+                messageDiv.textContent = text;
+                messageDiv.className = 'message ' + type;
+                messageDiv.style.display = 'block';
+            }
+
+            function hideMessage() {
+                messageDiv.style.display = 'none';
+            }
+
+            function disableForm() {
+                submitBtn.disabled = true;
+                form.username.disabled = true;
+                form.password.disabled = true;
+                captchaInput.disabled = true;
+            }
+
+            function enableForm() {
+                submitBtn.disabled = false;
+                form.username.disabled = false;
+                form.password.disabled = false;
+                captchaInput.disabled = false;
+            }
+
+            function checkBlockStatus() {
+                const blockUntil = getBlockUntil();
+                if (blockUntil > Date.now()) {
+                    disableForm();
+                    let remaining = Math.ceil((blockUntil - Date.now()) / 1000);
+                    showMessage(`Too many failed attempts. Try again in ${remaining} second${remaining !== 1 ? 's' : ''}.`, 'error');
+                    return true;
+                } else {
+                    // Only clear if there was a block that expired
+                    if (blockUntil > 0) {
+                        clearBlock();
+                    }
+                    enableForm();
+                    hideMessage();
+                    return false;
+                }
+            }
+
+            function fakeAuthenticate(username, password) {
+                // In reality, this would be server side verification.
+                // Here, we define multiple valid credentials
+                const validCredentials = [
+                    { username: 'user', password: 'pass123' },
+                    { username: 'admin', password: 'admin123' },
+                    { username: 'guest', password: 'guest2024' },
+                    { username: 'john', password: 'doe123' },
+                    { username: 'alice', password: 'wonderland' }
+                ];
+                
+                return validCredentials.some(cred => 
+                    cred.username === username && cred.password === password
+                );
+            }
+
+            function updateCountdown() {
+                const blockUntil = getBlockUntil();
+                if (blockUntil > Date.now()) {
+                    let remaining = Math.ceil((blockUntil - Date.now()) / 1000);
+                    showMessage(`Too many failed attempts. Try again in ${remaining} second${remaining !== 1 ? 's' : ''}.`, 'error');
+                } else {
+                    clearInterval(countdownInterval);
+                    clearBlock();
+                    enableForm();
+                    hideMessage();
+                }
+            }
+
+            let countdownInterval = null;
+
+            const openEyeSVG = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
+                    <path stroke="#dcdcff" stroke-width="2" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"/>
+                    <circle cx="12" cy="12" r="3" stroke="#dcdcff" stroke-width="2"/>
+                </svg>
+            `;
+            const closedEyeSVG = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
+                    <path stroke="#dcdcff" stroke-width="2" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"/>
+                    <circle cx="12" cy="12" r="3" stroke="#dcdcff" stroke-width="2"/>
+                    <line x1="4" y1="4" x2="20" y2="20" stroke="#dcdcff" stroke-width="2"/>
+                </svg>
+            `;
+
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            eyeIcon.innerHTML = openEyeSVG;
+
+            // Generate initial CAPTCHA
+            displayCaptcha();
+
+            // Refresh CAPTCHA button listener
+            refreshCaptchaBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                displayCaptcha();
+            });
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                if (checkBlockStatus()) {
+                    return false;
+                }
+
+                const username = form.username.value.trim();
+                const password = form.password.value;
+
+                // Validate CAPTCHA first
+                if (!validateCaptcha()) {
+                    showMessage('Incorrect CAPTCHA. Please try again.', 'error');
+                    displayCaptcha(); // Generate a new CAPTCHA
+                    captchaInput.value = ''; // Clear the input
+                    return false;
+                }
+
+                if (fakeAuthenticate(username, password)) {
+                    clearBlock();
+                    showMessage('Login successful! Welcome, ' + username + '!', 'success');
+                    form.reset();
+                    passwordInput.type = 'password';
+                    eyeIcon.innerHTML = openEyeSVG;
+                    displayCaptcha(); // Generate a new CAPTCHA
+                } else {
+                    // Failed login attempt
+                    let attempts = getAttempts() + 1;
+                    handleFailedAttempt(attempts);
+                    displayCaptcha(); // Generate a new CAPTCHA
+                    captchaInput.value = ''; // Clear the input
+                }
+            });
+
+            // On page load
+            if (checkBlockStatus()) {
+                if (countdownInterval) clearInterval(countdownInterval);
+                countdownInterval = setInterval(updateCountdown, 1000);
+            }
+
+            togglePasswordBtn.addEventListener('click', function() {
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                eyeIcon.innerHTML = isPassword ? closedEyeSVG : openEyeSVG;
+            });
+
+            // Add this to ensure the form is re-enabled after a failed attempt
+            function handleFailedAttempt(attempts) {
+                setAttempts(attempts);
+                
+                if (attempts >= MAX_ATTEMPTS) {
+                    // Block user logic (already correct)
+                    const blockUntil = Date.now() + BLOCK_TIME_MS;
+                    setBlockUntil(blockUntil);
+                    disableForm();
+                    showMessage(`Too many failed attempts. You are blocked for ${BLOCK_TIME_MS / 60000} minute(s).`, 'error');
+
+                    // Start countdown timer
+                    if (countdownInterval) clearInterval(countdownInterval);
+                    countdownInterval = setInterval(updateCountdown, 1000);
+                } else {
+                    // THIS IS THE KEY PART
+                    enableForm(); // Ensure the form is enabled
+                    const attemptsLeft = MAX_ATTEMPTS - attempts;
+                    showMessage(`Invalid username or password. ${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} left.`, 'error');
+                }
+            }
+        })();
+    </script>
+</body>
+
+</html>
