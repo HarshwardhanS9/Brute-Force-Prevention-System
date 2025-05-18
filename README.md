@@ -59,7 +59,7 @@ These measures help to safeguard user accounts and sensitive data from unauthori
 ## 📜 License
 
 This project is licensed under the MIT License.  
-See the [LICENSE](LICENSE) file for more details.
+See the [MIT LICENSE](https://github.com/HarshwardhanS9/Brute-force-prevention-system/blob/main/LICENSE) file for more details.
 
 ## 🤝 Contributing
 
