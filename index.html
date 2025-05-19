@@ -475,7 +475,19 @@
         })();
 
         // Number of brute force attempts to simulate
-        const attemptsToSimulate = 7; // More than MAX_ATTEMPTS to trigger block
+        const passwordList = [
+            'password123',
+            '123456',
+            'letmein',
+            'qwerty',
+            'admin',
+            'welcome',
+            'test123',
+            'iloveyou',
+            'monkey',
+            'dragon'
+        ];
+        const attemptsToSimulate = passwordList.length; // Use the length of the array
 
         let attempt = 0;
 
@@ -487,7 +499,10 @@
 
             // Fill in username and password with invalid credentials
             document.getElementById('username').value = 'invalidUser';
-            document.getElementById('password').value = 'wrongPassword';
+            document.getElementById('password').value = passwordList[attempt]; // Use a different password each time
+
+            // Log the password being used
+            console.log('Attempt:', attempt + 1, 'Password:', passwordList[attempt]);
 
             // Read the current CAPTCHA from the page
             const captcha = document.getElementById('captchaBox').textContent.trim();
