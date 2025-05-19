@@ -62,4 +62,4 @@ See the LICENSE file for more information.
 
 ## 📧 Contact
 
-Created by @HarshwardhanS9 – feel free to reach out!
+Created by [HarshWardhan Singhmar](https://github.com/HarshwardhanS9) – feel free to reach out!
