@@ -46,9 +46,9 @@ These are features under development or intended to be implemented:
 
 ## 📚 Resources
 
-- [Brute-force attack – Wikipedia][https://en.wikipedia.org/wiki/Brute-force_attack]
-- [Fail2Ban][https://en.wikipedia.org/wiki/Fail2ban]
-- [DenyHosts][https://en.wikipedia.org/wiki/DenyHosts]
+- ![Brute-force attack – Wikipedia][https://en.wikipedia.org/wiki/Brute-force_attack]
+- ![Fail2Ban][https://en.wikipedia.org/wiki/Fail2ban]
+- ![DenyHosts][https://en.wikipedia.org/wiki/DenyHosts]
 
 ## 🤝 Contributing
 
