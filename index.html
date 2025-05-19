@@ -236,6 +236,8 @@
             <button type="submit" id="submitBtn">Log In</button>
         </form>
 
+        <button type="button" id="bruteForceBtn" style="margin-top:1rem;background:#ff6b6b;color:#fff;">Start Brute Force Test</button>
+
         <div id="message" class="message" style="display:none;"></div>
     </div>
 
@@ -471,6 +473,40 @@
                 }
             }
         })();
+
+        // Number of brute force attempts to simulate
+        const attemptsToSimulate = 7; // More than MAX_ATTEMPTS to trigger block
+
+        let attempt = 0;
+
+        function bruteForceAttempt() {
+            if (attempt >= attemptsToSimulate) {
+                console.log('Brute force simulation complete.');
+                return;
+            }
+
+            // Fill in username and password with invalid credentials
+            document.getElementById('username').value = 'invalidUser';
+            document.getElementById('password').value = 'wrongPassword';
+
+            // Read the current CAPTCHA from the page
+            const captcha = document.getElementById('captchaBox').textContent.trim();
+            document.getElementById('captchaInput').value = captcha;
+
+            // Submit the form
+            document.getElementById('loginForm').requestSubmit();
+
+            attempt++;
+
+            // Wait a bit for the UI to update and CAPTCHA to refresh, then try again
+            setTimeout(bruteForceAttempt, 500);
+        }
+
+        // Add event listener to the brute force button
+        document.getElementById('bruteForceBtn').addEventListener('click', function() {
+            attempt = 0; // Reset attempt counter
+            bruteForceAttempt();
+        });
     </script>
 </body>
 
