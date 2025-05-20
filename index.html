@@ -338,7 +338,7 @@
                     showMessage(`Too many failed attempts. Try again in ${remaining} second${remaining !== 1 ? 's' : ''}.`, 'error');
                     return true;
                 } else {
-                    // Only clear if there was a block that expired
+                  
                     if (blockUntil > 0) {
                         clearBlock();
                     }
@@ -349,8 +349,7 @@
             }
 
             function fakeAuthenticate(username, password) {
-                // In reality, this would be server side verification.
-                // Here, we define multiple valid credentials
+        
                 const validCredentials = [{
                     username: 'user',
                     password: 'pass123'
@@ -431,7 +430,7 @@
                 if (!validateCaptcha()) {
                     showMessage('Incorrect CAPTCHA. Please try again.', 'error');
                     displayCaptcha(); // Generate a new CAPTCHA
-                    captchaInput.value = ''; // Clear the input
+                    captchaInput.value = ''; 
                     return false;
                 }
 
@@ -463,12 +462,12 @@
                 eyeIcon.innerHTML = isPassword ? closedEyeSVG : openEyeSVG;
             });
 
-            // Add this to ensure the form is re-enabled after a failed attempt
+         
             function handleFailedAttempt(attempts) {
                 setAttempts(attempts);
 
                 if (attempts >= MAX_ATTEMPTS) {
-                    // Block user logic (already correct)
+                   
                     const blockUntil = Date.now() + BLOCK_TIME_MS;
                     setBlockUntil(blockUntil);
                     disableForm();
@@ -510,7 +509,7 @@
 
             // Use the username entered by the user
             const username = document.getElementById('username').value;
-            document.getElementById('username').value = username; // (optional, keeps the field unchanged)
+            document.getElementById('username').value = username; 
             document.getElementById('password').value = passwordList[attempt];
 
             // Log the username and password being used
@@ -525,7 +524,7 @@
 
             attempt++;
 
-            // Wait a bit for the UI to update and CAPTCHA to refresh, then try again
+         
             setTimeout(bruteForceAttempt, 500);
         }
 
