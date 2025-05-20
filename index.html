@@ -132,6 +132,7 @@
             cursor: pointer;
             user-select: none;
         }
+        
         .show-password-label input[type="checkbox"] {
             margin-right: 0.3em;
         }
@@ -145,15 +146,17 @@
             align-items: center;
             height: 100%;
         }
+        
         .eye-btn:focus {
             outline: 2px solid #9fa8ff;
         }
+        
         .password-row input[type="password"],
         .password-row input[type="text"] {
             flex: 1;
         }
-
         /* CAPTCHA Styles */
+        
         .captcha-container {
             display: flex;
             flex-direction: column;
@@ -348,15 +351,24 @@
             function fakeAuthenticate(username, password) {
                 // In reality, this would be server side verification.
                 // Here, we define multiple valid credentials
-                const validCredentials = [
-                    { username: 'user', password: 'pass123' },
-                    { username: 'admin', password: 'admin123' },
-                    { username: 'guest', password: 'guest2024' },
-                    { username: 'john', password: 'doe123' },
-                    { username: 'alice', password: 'wonderland' }
-                ];
-                
-                return validCredentials.some(cred => 
+                const validCredentials = [{
+                    username: 'user',
+                    password: 'pass123'
+                }, {
+                    username: 'admin',
+                    password: 'admin123'
+                }, {
+                    username: 'guest',
+                    password: 'guest2024'
+                }, {
+                    username: 'john',
+                    password: 'doe123'
+                }, {
+                    username: 'alice',
+                    password: 'wonderland'
+                }];
+
+                return validCredentials.some(cred =>
                     cred.username === username && cred.password === password
                 );
             }
@@ -454,7 +466,7 @@
             // Add this to ensure the form is re-enabled after a failed attempt
             function handleFailedAttempt(attempts) {
                 setAttempts(attempts);
-                
+
                 if (attempts >= MAX_ATTEMPTS) {
                     // Block user logic (already correct)
                     const blockUntil = Date.now() + BLOCK_TIME_MS;
@@ -474,7 +486,6 @@
             }
         })();
 
-        // Number of brute force attempts to simulate
         const passwordList = [
             'password123',
             '123456',
@@ -487,7 +498,7 @@
             'monkey',
             'dragon'
         ];
-        const attemptsToSimulate = passwordList.length; // Use the length of the array
+        const attemptsToSimulate = passwordList.length;
 
         let attempt = 0;
 
@@ -497,12 +508,13 @@
                 return;
             }
 
-            // Fill in username and password with invalid credentials
-            document.getElementById('username').value = 'invalidUser';
-            document.getElementById('password').value = passwordList[attempt]; // Use a different password each time
+            // Use the username entered by the user
+            const username = document.getElementById('username').value;
+            document.getElementById('username').value = username; // (optional, keeps the field unchanged)
+            document.getElementById('password').value = passwordList[attempt];
 
-            // Log the password being used
-            console.log('Attempt:', attempt + 1, 'Password:', passwordList[attempt]);
+            // Log the username and password being used
+            console.log('Attempt:', attempt + 1, 'Username:', username, 'Password:', passwordList[attempt]);
 
             // Read the current CAPTCHA from the page
             const captcha = document.getElementById('captchaBox').textContent.trim();
